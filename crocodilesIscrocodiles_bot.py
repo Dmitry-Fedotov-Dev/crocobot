@@ -35,7 +35,7 @@ def get_text_messages(message):
 		category = "cat3"
 		bot.send_message(message.from_user.id, getCategoryFunc(category))
 	else: 
-		bot.send_message(message.from_user.id, "Я не  понимаю :(")
+		bot.send_message(message.from_user.id, "Я не  понимаю 😢")
 
 bot.polling(none_stop=True, interval=0)
 
