@@ -146,7 +146,7 @@ def win_outsearch_product(message, search_name):
 	pages = ceil(len(out) / 4)
 	Ncur_page = 1
 	for i in range(4):
-		cur_page += char_list[i] + ' ' + ' '.join(out[i][1:3]) + ' '.join(out[i][5]) + '\n'
+		cur_page += char_list[i] + ' ' + ' '.join(out[i][1:3]) + ' (' + out[i][4] + 'руб.)\n'
 	bot.send_message(message.chat.id, 'Вот что я нашёл:\n' + cur_page + '\n\nВыведена страница 1/' + str(pages) + '\n\nДля добавления товара в корзину введите его номер из списка:', reply_markup = markup5)
 	bot.register_next_step_handler(message, lambda mm: table(mm, out, Ncur_page, pages, cur_page))
 
@@ -156,7 +156,7 @@ def table(message, out, Ncur_page, pages, cur_page):
 		Ncur_page += 1
 		for i in range(4):
 			if i+4*Ncur_page < len(out):
-				cur_page += char_list[i] + ' ' + ' '.join(out[i+4*Ncur_page][1:4]) + ' '.join(out[4*Ncur_page - i][5]) + '\n'
+				cur_page += char_list[i] + ' ' + ' '.join(out[i+4*Ncur_page][1:3]) + ' (' + out[i+4*Ncur_page][4] + 'руб.)\n'
 		if Ncur_page == 1:
 			gen_table(message, 0, out, Ncur_page, pages, cur_page)
 		elif Ncur_page == pages:
@@ -168,7 +168,7 @@ def table(message, out, Ncur_page, pages, cur_page):
 		Ncur_page -= 1
 		for i in range(4):
 			if 4*Ncur_page - i >= 0:
-				cur_page += char_list[i] + ' ' + ' '.join(out[4*Ncur_page - i][1:3]) + ' '.join(out[4*Ncur_page - i][5]) + '\n'
+				cur_page += char_list[i] + ' ' + ' '.join(out[4*Ncur_page - i][1:3]) + ' (' + out[4*Ncur_page - i][4] + 'руб.)\n'
 		if Ncur_page == 1:
 			gen_table(message, 0, out, Ncur_page, pages, cur_page)
 		elif Ncur_page == pages:
@@ -240,16 +240,32 @@ def win_outsearch_adress(message, search_name):
 	pages = ceil(len(out) / 4)
 	Ncur_page = 1
 	for i in range(4):
-		cur_page += char_list[i] + ' ' + ' '.join(out[i][1:3]) + ' '.join(out[i][5]) + '\n'
+		cur_page += char_list[i] + ' ' + ' '.join(out[i][1:3]) + ' (' + out[i][4] + 'руб.)\n'
 	bot.send_message(message.chat.id, 'Вот что я нашёл:\n' + cur_page + '\n\nВыведена страница 1/' + str(pages) + '\n\nДля добавления товара в корзину введите его номер из списка:', reply_markup = markup5)
 	bot.register_next_step_handler(message, lambda mm: table(mm, out, Ncur_page, pages, cur_page))
 
 
 def basket(message):
 	bb = '\n'
-	for i in range(len(cur_basket)):
-		bb += str(i+1) + ' | ' + ' | '.join(out[i][1:3]) + ' | '.join(out[i][5]) + '\n'
-	bot.send_message(message.chat.id, 'В вашей корзине 🛒:\n\n' + '№ | Название | Производитель | Цена' + bb, reply_markup = markup2)
+	if len(cur_basket) > 0:
+		for i in range(len(cur_basket)):
+			bb += str(i+1) + ' | ' + ' | '.join(out[i][1:3]) + ' | ' + out[i][4] + 'руб.\n'
+	bot.send_message(message.chat.id, 'В вашей корзине 🛒:\n\n' + '№ | Название | Производитель | Цена' + bb + '\nДля удаления товара из корзины введите их номера через запятую (1,2,3):', reply_markup = markup2)
+	bot.register_next_step_handler(message, delete_item_from_basket)
+
+
+def delete_item_basket(message):
+	if len(message.text) > 0:
+		dels = message.text.split(',')
+		for i in dels:
+			cur_basket.pop(int(i))
+		if len(cur_basket) > 0:
+			for i in range(len(cur_basket)):
+				bb += str(i+1) + ' | ' + ' | '.join(out[i][1:3]) + ' | ' + out[i][4] + 'руб.\n'
+		bot.send_message(message.chat.id, 'В вашей корзине 🛒:\n\n' + '№ | Название | Производитель | Цена' + bb + '\nДля удаления товара из корзины введите их номера через запятую (1,2,3):', reply_markup = markup2)
+		bot.register_next_step_handler(message, delete_item_from_basket)
+	else:
+		pass
 
 
 
