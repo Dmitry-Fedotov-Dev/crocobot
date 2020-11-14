@@ -40,6 +40,7 @@ def SearchFunc(string):
 bot = telebot.TeleBot('1443865969:AAGgoDOGnW7q2j1WGprdLP0gR6trtWNLyoA');
 
 cur_basket = []
+search_name = ''
 
 # Клавиатура
 # 1
@@ -91,7 +92,7 @@ def other_windows(message):
 		
 	# Кнопка "в начало"
 	elif message.text == 'В начало 🔼':
-		welcome(message)
+		return welcome(message)
 		
 	# Остальное
 	else:
@@ -117,8 +118,8 @@ def set_adress(message):
 
 	bot.send_message(message.chat.id, 'Вы ввели: ' + message.text + '\nДанные верны?', reply_markup = markup3)
 
-
 def set_product(message):
+	search_name = message.text
 	markup4 = types.InlineKeyboardMarkup()
 	item41 = types.InlineKeyboardButton('Да', callback_data = 'yes_product')
 	item42 = types.InlineKeyboardButton('Нет', callback_data = 'no_product')
@@ -126,16 +127,18 @@ def set_product(message):
 	markup4.add(item41)
 	markup4.add(item42)
 
-	bot.send_message(message.chat.id, 'Вы ввели: ' + message.text + '\nДанные верны?', reply_markup = markup4)
+	
+
+	bot.send_message(message.chat.id, 'Вы ввели: ' + searh_name + '\nДанные верны?', reply_markup = markup4)
 
 
 def win_outsearch_product(message):
-	out = SearchFunc(message.text)
+	out = SearchFunc(search_name)
 	cur_page = ''
 	pages = ceil(len(out) / 4)
 	Ncur_page = 1
 	for i in range(4):
-		cur_page += str(i+1) + out[i][1:] + '\n'
+		cur_page += str(i+1) + ' ' + ' '.join(out[i][1:]) + '\n'
 	bot.send_message(message.chat.id, 'Вот что я нашёл:\n' + cur_page + '\n\nВыведена страница 1/' + str(pages) + '\n\nДля добавления товара в корзину введите его номер из списка:', reply_markup = markup5)
 	bot.register_next_step_handler(message, lambda mm: table(mm, out, Ncur_page, pages, cur_page))
 
@@ -146,7 +149,7 @@ def table(message, out, Ncur_page, pages, cur_page):
 		Ncur_page += 1
 		for i in range(4):
 			if i+4*Ncur_page < len(out):
-				cur_page += str(i+1) + out[i+4*Ncur_page][1:] + '\n'
+				cur_page += str(i+1) + ' '.join(out[i+4*Ncur_page][1:]) + '\n'
 		if Ncur_page == 1:
 			gen_table(message, 0, out, Ncur_page, pages, cur_page)
 		elif Ncur_page == pages:
@@ -158,7 +161,7 @@ def table(message, out, Ncur_page, pages, cur_page):
 		Ncur_page -= 1
 		for i in range(4):
 			if 4*Ncur_page - i >= 0:
-				cur_page += str(i+1) + out[4*Ncur_page - i][1:] + '\n'
+				cur_page += str(i+1) + ' '.join(out[4*Ncur_page - i][1:]) + '\n'
 		if Ncur_page == 1:
 			gen_table(message, 0, out, Ncur_page, pages, cur_page)
 		elif Ncur_page == pages:
@@ -233,4 +236,3 @@ def callback_worker(call):
 		win_search_product(call.message)
 
 bot.polling(none_stop=True, interval=0)
-
