@@ -3,6 +3,7 @@ import requests
 import codecs
 import json
 from telebot import types
+from math import ceil
 
 def getCategoryFunc(category):
 	if category == "cat1":
@@ -19,7 +20,7 @@ def SearchFunc(msg = ''):
 	if msg == '':
 		return out
 	else:
-		for k in range(10):
+		for k in range(50):
 			out.append('{} second text'.format(k+1))
 		return out
 
@@ -42,8 +43,6 @@ markup2.add(item21)
 markup5 = types.ReplyKeyboardMarkup(resize_keyboard = True)
 item51 = types.KeyboardButton('◀')
 item52 = types.KeyboardButton('▶')
-markup5.add(item51, item52)
-markup5.add(item21)
 # hide
 hideBoard = types.ReplyKeyboardRemove()
 
@@ -73,7 +72,7 @@ def other_windows(message):
 		
 	# Остальное
 	else:
-		bot.send_message(message.chat.id, "Я не  понимаю 😢")
+		bot.send_message(message.chat.id, "Я не  понимаю 😢\nИспользуйте /start чтобы начать сначала")
 
 def win_search_product(message):
 	bot.send_message(message.chat.id, 'Введите название интересующего вас товара:', reply_markup = hideBoard)
@@ -109,12 +108,62 @@ def set_product(message):
 
 def win_outsearch_product(message):
 	out = SearchFunc(message.text)
-	msg = ''
-	for i in out:
-		msg += i + '\n'
-	bot.send_message(message.chat.id, 'Вот что я нашёл:\n' + msg + '\nДля добавления товара в корзину введите его номер из списка:', reply_markup = markup5)
+	cur_page = ''
+	pages = ceil(out.count() / 4)
+	for i in range(4):
+		cur_page += i+1 + out[i][1:] + '\n'
+	tmp_markup = markup5
+	tmp_markup.add(item52)
+	tmp_markup.add(item21)
+	bot.send_message(message.chat.id, 'Вот что я нашёл:\n' + cur_page + '\n\nВыведена страница 1/' + pages + '\n\nДля добавления товара в корзину введите его номер из списка:', reply_markup = tmp_markup)
+	bot.register_next_step_handler(message, table(out = out, Ncur_page = 1, pages = pages))
 
+	
+def table(message, out, Ncur_page, pages):
+	if message.text == '▶':
+		cur_page = ''
+		Ncur_page += 1
+		for i in range(4):
+			if i+4*Ncur_page < out.count:
+				cur_page += i+1 + out[i+4*Ncur_page][1:] + '\n'
+		if Ncur_page == 1:
+			gen_table(message, 0, cur_page, Ncur_page, pages)
+		elif Ncur_page == pages:
+			gen_table(message, 2, cur_page, Ncur_page, pages)
+		else:
+			gen_table(message, 1, cur_page, Ncur_page, pages)
+	elif message.text == '◀':
+		cur_page = ''
+		Ncur_page -= 1
+		for i in range(4):
+			if 4*Ncur_page - i > 0:
+				cur_page += i+1 + out[4*Ncur_page - i][1:] + '\n'
+		if Ncur_page == 1:
+			gen_table(message, 0, cur_page, Ncur_page, pages)
+		elif Ncur_page == pages:
+			gen_table(message, 2, cur_page, Ncur_page, pages)
+		else:
+			gen_table(message, 1, cur_page, Ncur_page, pages)
+	elif message.text == 'В начало🔼':
+		return welcome(message)
 
+def gen_table(message, toggle, cur_page, Ncur_page, pages):
+	if toggle == 0:
+		tmp_markup = markup5
+		tmp_markup.add(item52)
+		tmp_markup.add(item21)
+		
+	elif toggle == 1:
+		tmp_markup = markup5
+		tmp_markup.add(item51,item52)
+		tmp_markup.add(item21)
+		
+	elif toggle == 2:
+		tmp_markup = markup5
+		tmp_markup.add(item51)
+		tmp_markup.add(item21)
+	msg = 'Вот что я нашёл:\n' + cur_page + '\n\nВыведена страница ' + Ncur_page + '/' + pages + '\n\nДля добавления товара в корзину введите его номер из списка:'
+	bot.edit_message_text(text = msg, chat_id = message.chat.id, message_id = message.message_id, reply_markup = tmp_markup)
 
 def win_outsearch_adress(message):
 	out = SearchFunc(message.text)
@@ -128,7 +177,7 @@ def win_outsearch_adress(message):
 def callback_worker(call):
 	if call.data == 'yes_adress':
 		bot.edit_message_reply_markup(call.message.chat.id, message_id = call.message.message_id, reply_markup = '')
-		winwin_outsearch_adress(call.message)
+		win_outsearch_adress(call.message)
 	elif call.data == 'yes_product':
 		bot.edit_message_reply_markup(call.message.chat.id, message_id = call.message.message_id, reply_markup = '')
 		win_outsearch_product(call.message)
@@ -140,4 +189,3 @@ def callback_worker(call):
 		win_search_product(call.message)
 
 bot.polling(none_stop=True, interval=0)
-
