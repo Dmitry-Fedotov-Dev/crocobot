@@ -1,3 +1,3 @@
 # crocobot
 
-This if the best Telegram bot for search a drugs.
+This is the best Telegram bot for search a drugs.
