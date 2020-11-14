@@ -15,59 +15,82 @@ def getCategoryFunc(category):
 	if category == "cat3":
 		return "Ещё не готово"
 
-def SearchFunc(msg = ''):
-	out=[]
-	if msg == '':
-		return out
-	else:
-		for k in range(50):
-			out.append('{} second text'.format(k+1))
-		return out
+#def SearchFunc(msg = ''):
+#	out=[]
+#	if msg == '':
+#		return out
+#	else:
+#		for k in range(50):
+#			out.append('  second text {}'.format(k+1))
+#		return out
+
+def SearchFunc(string):
+    url = "http://my.rest.api/search/" + string
+    drug_list = requests.get(url)
+    drug_list = drug_list.json()
+    mylist = [];
+    for item in drug_list:
+       for value in item.values():
+            mylist.append(value)
+
+    lol = lambda lst, sz: [lst[i:i+sz] for i in range(0, len(lst), sz)]
+    mylist = lol(mylist, 5)
+    return mylist
 
 bot = telebot.TeleBot('1443865969:AAGgoDOGnW7q2j1WGprdLP0gR6trtWNLyoA');
 
+cur_basket = []
 
 # Клавиатура
 # 1
 markup1 = types.ReplyKeyboardMarkup(resize_keyboard = True)
-item11 = types.KeyboardButton('Поиск лекарства💊')
-item12 = types.KeyboardButton('Поиск аптеки🚑')
-item13 = types.KeyboardButton('Моя корзина🛒')
+item11 = types.KeyboardButton('Поиск лекарства 💊')
+item12 = types.KeyboardButton('Поиск аптеки 🚑')
+item13 = types.KeyboardButton('Моя корзина 🛒')
 markup1.add(item11, item12)
 markup1.add(item13)
 # 2
 markup2 = types.ReplyKeyboardMarkup(resize_keyboard = True)
 item21 = types.KeyboardButton('В начало🔼')
 markup2.add(item21)
-# 5
+# 5,6,7
 markup5 = types.ReplyKeyboardMarkup(resize_keyboard = True)
 item51 = types.KeyboardButton('◀')
 item52 = types.KeyboardButton('▶')
+markup5.add(item52)
+markup5.add(item21)
+markup6 = types.ReplyKeyboardMarkup(resize_keyboard = True)
+markup6.add(item51,item52)
+markup6.add(item21)
+markup7 = types.ReplyKeyboardMarkup(resize_keyboard = True)
+markup7.add(item51)
+markup7.add(item21)
 # hide
 hideBoard = types.ReplyKeyboardRemove()
 
 
 @bot.message_handler(commands=['start'])
 def welcome(message):
-	bot.send_photo(message.chat.id, "https://www.prikol.ru/wp-content/gallery/october-2019/prikol-25102019-001.jpg", reply_markup = markup1)
+	bot.send_photo(message.chat.id, "https://yadi.sk/i/U39tZCQRbk-K4A", reply_markup = markup1)
 
 
 @bot.message_handler(content_types=['text'])
 def other_windows(message):
 	# Ветка "поиск лекарства"
-	if message.text == 'Поиск лекарства💊':
+	if message.text == 'Поиск лекарства 💊':
 		win_search_product(message)
 
 	# Ветка "поиск аптеки"
-	elif message.text == 'Поиск аптеки🚑':
+	elif message.text == 'Поиск аптеки 🚑':
 		win_search_adress(message)
 	
 	# Ветка "моя корзина"
-	elif message.text == 'Моя корзина🛒':
-		bot.send_message(message.chat.id, 'В вашей корзине🛒:\n\n' + '№|Название|Производитель|Аптека|Цена', reply_markup = markup2)
+	elif message.text == 'Моя корзина 🛒':
+		basket(message)
+		#bot.send_message(message.chat.id, 'В вашей корзине🛒:\n\n' + '№|Название|Производитель|Аптека|Цена', reply_markup = markup2)
 		
 	# Кнопка "в начало"
-	elif message.text == 'В начало🔼':
+	elif message.text == 'В начало 🔼':
 		welcome(message)
 		
 	# Остальное
@@ -109,68 +132,89 @@ def set_product(message):
 def win_outsearch_product(message):
 	out = SearchFunc(message.text)
 	cur_page = ''
-	pages = ceil(out.count() / 4)
+	pages = ceil(len(out) / 4)
+	Ncur_page = 1
 	for i in range(4):
-		cur_page += i+1 + out[i][1:] + '\n'
-	tmp_markup = markup5
-	tmp_markup.add(item52)
-	tmp_markup.add(item21)
-	bot.send_message(message.chat.id, 'Вот что я нашёл:\n' + cur_page + '\n\nВыведена страница 1/' + pages + '\n\nДля добавления товара в корзину введите его номер из списка:', reply_markup = tmp_markup)
-	bot.register_next_step_handler(message, table(out = out, Ncur_page = 1, pages = pages))
+		cur_page += str(i+1) + out[i][1:] + '\n'
+	bot.send_message(message.chat.id, 'Вот что я нашёл:\n' + cur_page + '\n\nВыведена страница 1/' + str(pages) + '\n\nДля добавления товара в корзину введите его номер из списка:', reply_markup = markup5)
+	bot.register_next_step_handler(message, lambda mm: table(mm, out, Ncur_page, pages, cur_page))
 
 	
-def table(message, out, Ncur_page, pages):
+def table(message, out, Ncur_page, pages, cur_page):
 	if message.text == '▶':
 		cur_page = ''
 		Ncur_page += 1
 		for i in range(4):
-			if i+4*Ncur_page < out.count:
-				cur_page += i+1 + out[i+4*Ncur_page][1:] + '\n'
+			if i+4*Ncur_page < len(out):
+				cur_page += str(i+1) + out[i+4*Ncur_page][1:] + '\n'
 		if Ncur_page == 1:
-			gen_table(message, 0, cur_page, Ncur_page, pages)
+			gen_table(message, 0, out, Ncur_page, pages, cur_page)
 		elif Ncur_page == pages:
-			gen_table(message, 2, cur_page, Ncur_page, pages)
+			gen_table(message, 2, out, Ncur_page, pages, cur_page)
 		else:
-			gen_table(message, 1, cur_page, Ncur_page, pages)
+			gen_table(message, 1, out, Ncur_page, pages, cur_page)
 	elif message.text == '◀':
 		cur_page = ''
 		Ncur_page -= 1
 		for i in range(4):
-			if 4*Ncur_page - i > 0:
-				cur_page += i+1 + out[4*Ncur_page - i][1:] + '\n'
+			if 4*Ncur_page - i >= 0:
+				cur_page += str(i+1) + out[4*Ncur_page - i][1:] + '\n'
 		if Ncur_page == 1:
-			gen_table(message, 0, cur_page, Ncur_page, pages)
+			gen_table(message, 0, out, Ncur_page, pages, cur_page)
 		elif Ncur_page == pages:
-			gen_table(message, 2, cur_page, Ncur_page, pages)
+			gen_table(message, 2, out, Ncur_page, pages, cur_page)
 		else:
-			gen_table(message, 1, cur_page, Ncur_page, pages)
-	elif message.text == 'В начало🔼':
-		return welcome(message)
+			gen_table(message, 1, out, Ncur_page, pages, cur_page)
+	elif message.text == 'В начало 🔼':
+		welcome(message)
+	elif message.text == '1':
+		cur_basket.append(out[1 + 4*Ncur_page])
+		bot.register_next_step_handler(message, lambda mm: table(mm, out, Ncur_page, pages, cur_page))
+	elif message.text == '2':
+		cur_basket.append(out[2 + 4*Ncur_page])
+		bot.register_next_step_handler(message, lambda mm: table(mm, out, Ncur_page, pages, cur_page))
+	elif message.text == '3':
+		cur_basket.append(out[3 + 4*Ncur_page])
+		bot.register_next_step_handler(message, lambda mm: table(mm, out, Ncur_page, pages, cur_page))
+	elif message.text == '4':
+		cur_basket.append(out[4 + 4*Ncur_page])
+		bot.register_next_step_handler(message, lambda mm: table(mm, out, Ncur_page, pages, cur_page))
 
-def gen_table(message, toggle, cur_page, Ncur_page, pages):
+
+def gen_table(message, toggle, out, Ncur_page, pages, cur_page):
 	if toggle == 0:
 		tmp_markup = markup5
-		tmp_markup.add(item52)
-		tmp_markup.add(item21)
 		
 	elif toggle == 1:
-		tmp_markup = markup5
-		tmp_markup.add(item51,item52)
-		tmp_markup.add(item21)
+		tmp_markup = markup6
 		
 	elif toggle == 2:
-		tmp_markup = markup5
-		tmp_markup.add(item51)
-		tmp_markup.add(item21)
-	msg = 'Вот что я нашёл:\n' + cur_page + '\n\nВыведена страница ' + Ncur_page + '/' + pages + '\n\nДля добавления товара в корзину введите его номер из списка:'
-	bot.edit_message_text(text = msg, chat_id = message.chat.id, message_id = message.message_id, reply_markup = tmp_markup)
+		tmp_markup = markup7
+		
+	msg = 'Вот что я нашёл:\n' + cur_page + '\n\nВыведена страница ' + str(Ncur_page) + '/' + str(pages) + '\n\nДля добавления товара в корзину введите его номер из списка:'
+	#bot.edit_message_text(chat_id = message.chat.id, message_id = message.message_id - 1, text = msg, reply_markup = tmp_markup) -не работает
+	bot.send_message(message.chat.id, msg, reply_markup = tmp_markup)
+	bot.register_next_step_handler(message, lambda mm: table(mm, out, Ncur_page, pages, cur_page))
+
+
 
 def win_outsearch_adress(message):
 	out = SearchFunc(message.text)
-	msg = ''
-	for i in out:
-		msg += i + '\n'
-	bot.send_message(message.chat.id, 'Вот что я нашёл:\n' + msg + '\nДля добавления товара в корзину введите его номер из списка:', reply_markup = markup5)
+	cur_page = ''
+	pages = ceil(len(out) / 4)
+	Ncur_page = 1
+	for i in range(4):
+		cur_page += str(i+1) + ' '.join(out[i][1:]) + '\n'
+	bot.send_message(message.chat.id, 'Вот что я нашёл:\n' + cur_page + '\n\nВыведена страница 1/' + str(pages) + '\n\nДля добавления товара в корзину введите его номер из списка:', reply_markup = markup5)
+	bot.register_next_step_handler(message, lambda mm: table(mm, out, Ncur_page, pages, cur_page))
+
+
+def basket(message):
+	bb = '\n'
+	for i in range(len(cur_basket)):
+		bb += str(i+1) + ' '.join(cur_basket[i][1:]) + '\n'
+	bot.send_message(message.chat.id, 'В вашей корзине 🛒:\n\n' + '№ | Название | Производитель | Аптека | Цена' + bb, reply_markup = markup2)
+
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -189,3 +233,4 @@ def callback_worker(call):
 		win_search_product(call.message)
 
 bot.polling(none_stop=True, interval=0)
+
