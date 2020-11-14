@@ -18,34 +18,37 @@ def getCategoryFunc(category):
 
 bot = telebot.TeleBot('1443865969:AAGgoDOGnW7q2j1WGprdLP0gR6trtWNLyoA');
 
+
+# Клавиатура
+# 1
+markup1 = types.ReplyKeyboardMarkup(resize_keyboard = True)
+item11 = types.KeyboardButton('Поиск лекарства💊')
+item12 = types.KeyboardButton('Поиск аптеки🚑')
+item13 = types.KeyboardButton('Моя корзина🛒')
+markup1.add(item11, item12)
+markup1.add(item13)
+# 2
+markup2 = types.ReplyKeyboardMarkup(resize_keyboard = True)
+item21 = types.KeyboardButton('В начало◀')
+markup2.add(item21)
+# hide
+hideBoard = types.ReplyKeyboardRemove()
+
+
 @bot.message_handler(commands=['start'])
 def welcome(message):
-	# Клавиатура
-	markup1 = types.ReplyKeyboardMarkup(resize_keyboard = True)
-	item11 = types.KeyboardButton('Поиск лекарства💊')
-	item12 = types.KeyboardButton('Поиск аптеки🚑')
-	item13 = types.KeyboardButton('Моя корзина🛒')
-
-	markup1.add(item11, item12)
-	markup1.add(item13)
-
 	bot.send_photo(message.from_user.id, "https://www.prikol.ru/wp-content/gallery/october-2019/prikol-25102019-001.jpg", reply_markup = markup1)
 
 
 @bot.message_handler(content_types=['text'])
 def other_windows(message):
-	markup2 = types.ReplyKeyboardMarkup(resize_keyboard = True)
-	item21 = types.KeyboardButton('В начало◀')
-	markup2.add(item21)
-
 	# Ветка "поиск лекарства"
 	if message.text == 'Поиск лекарства💊':
-		bot.send_message(message.from_user.id, 'Введите название интересующего вас товара:')
+		bot.send_message(message.from_user.id, 'Введите название интересующего вас товара:', reply_markup = hideBoard)
 		bot.register_next_step_handler(message, set_product)
-		
 	# Ветка "поиск аптеки"
 	elif message.text == 'Поиск аптеки🚑':
-		bot.send_message(message.from_user.id, 'Введите ваш адрес (город, улица):')
+		bot.send_message(message.from_user.id, 'Введите ваш адрес (город, улица):', reply_markup = hideBoard)
 		bot.register_next_step_handler(message, set_adress)
 		
 	# Ветка "моя корзина"
@@ -83,17 +86,17 @@ def set_product(message):
 	bot.send_message(message.from_user.id, 'Вы ввели: ' + message.text + '\nДанные верны?', reply_markup = markup4)
 
 
-
 @bot.callback_query_handler(func=lambda call: True)
 def callback_worker(call):
 	if call.data == 'yes':
 		bot.send_message(call.message.chat.id, 'Запомню : )');
+		bot.edit_message_reply_markup(call.message.chat.id, message_id = call.message.message_id, reply_markup = '')
 	elif call.data == 'no_adress':
 		# ответ
-		pass
+		bot.register_next_step_handler(call.message, other_windows)
 	elif call.data == 'no_product':
 		# ответ
-		pass
+		bot.register_next_step_handler(call.message, other_windows)
 
 
 bot.polling(none_stop=True, interval=0)
