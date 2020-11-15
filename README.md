@@ -1,6 +1,6 @@
 # Crocobot here!
 
-##### Open [this telegram link](https://t.me/crocodilesIscrocodiles_bot "Необязательная подсказка") and make your first medicine order with Crocobot. :sunglasses: 
+##### Open [this telegram link](https://t.me/crocodilesIscrocodiles_bot "CrocoBot") and make your first medicine order with Crocobot. :sunglasses: 
 
 
 ![alt text](https://sun9-51.userapi.com/YsgZCUAPh66Z595fmCr7u2w0SQWsrhETZqMSAA/rJ7KjoAHaK8.jpg)
@@ -31,7 +31,9 @@
 # Croco says "thank you" and he going to lying down walk! 
 ![alt text](https://sun9-39.userapi.com/MiVRG2mqoq5hQph4A3riTqvHDn8yPXBIUSPQJg/7xxiq_5Zpk0.jpg)
 
-
+It seems that Croco has a ittle present for you..
+[Stickerpack with Croco!](https://t.me/addstickers/CrocoBot)
+![alt text](http://qrcoder.ru/code/?https%3A%2F%2Ft.me%2Faddstickers%2FCrocoBot&4&0)
 
 
 
