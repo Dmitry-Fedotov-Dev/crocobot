@@ -20,12 +20,12 @@
 ![alt text](https://sun9-14.userapi.com/C2RDzpK_5cX7BRJZXmQWpfqt_Zu9lgh0P9bPZg/GyKOV3cYuSs.jpg)
 ## 6) Choose the emoji of your needed product.
 ![alt text](https://sun9-53.userapi.com/Wc50Xl3RBqYiI_SreGXeCyO6rxuLvLaGzgyE_A/U_7Bbt2AR6Q.jpg)
-## 7) Push the button "Go home" after it.
+## 7) Push the button "Go home" after this.
 ![alt text](https://sun9-7.userapi.com/4W7w4f51EcYIl5P4COpS2i_A8Ct83ltcgbjgyQ/Qb5SqpWv5_M.jpg)
 ![alt text](https://sun9-22.userapi.com/RQ4frmKyjKLzqmGfV8tVzxsrAe87-3i9CxgTBQ/P2T-IcbNWTM.jpg)
 ## 8) Then click the "My basket".
 ![alt text](https://sun9-4.userapi.com/yX8vuD3peGLi8QtSN6lzbXiK0OiL1nMRlDsLuQ/zlh-41Vp8XI.jpg)
-## 9) You can see your choosed medications here! 
+## 9) You can see your selected medications here! 
 ![alt text](https://sun9-21.userapi.com/5iqwyWvwwK-ISYk4QsNys_t8fjQP1jSe2qIw6Q/DRQ7dB4kT_s.jpg)
 ## 10) You can choose to clearing the basket or send the request for order this Hydrogen peroxide! 
 # Croco says "thank you" and he going to lying down walk! 
