@@ -41,15 +41,15 @@ char_list = ['1️⃣','2️⃣','3️⃣','4️⃣']
 # 1
 markup1 = types.ReplyKeyboardMarkup(resize_keyboard = True)
 item11 = types.KeyboardButton('Поиск лекарства 💊')
-item12 = types.KeyboardButton('Поиск аптеки 🚑')
+item12 = types.KeyboardButton('Помощь 👨‍💻')
 item13 = types.KeyboardButton('Моя корзина 🛒')
 markup1.add(item11, item12)
 markup1.add(item13)
 # 2
 markup2 = types.ReplyKeyboardMarkup(resize_keyboard = True)
 item21 = types.KeyboardButton('В начало 🔼')
-item22 = types.KeyboardButton('Очистить корзину 🗑')
-item23 = types.KeyboardButton('Отправить запрос 📝')
+item22 = types.KeyboardButton('Очистить корзину ♻')
+item23 = types.KeyboardButton('Отправить запрос 📝', request_contact = True)
 markup2.add(item22, item21, item23)
 # 5,6,7
 markup5 = types.ReplyKeyboardMarkup(resize_keyboard = True)
@@ -85,9 +85,9 @@ def other_windows(message):
 	if message.text == 'Поиск лекарства 💊':
 		win_search_product(message)
 
-	# Ветка "поиск аптеки"
-	elif message.text == 'Поиск аптеки 🚑':
-		win_search_adress(message)
+	# Ветка "помощь"
+	elif message.text == 'Помощь 👨‍💻':
+		documentation_help(message)
 	
 	# Ветка "моя корзина"
 	elif message.text == 'Моя корзина 🛒':
@@ -111,16 +111,16 @@ def win_search_adress(message):
 	bot.register_next_step_handler(message, set_adress)
 
 
-def set_adress(message):
-	search_name = message.text
-	markup3 = types.InlineKeyboardMarkup()
-	item31 = types.InlineKeyboardButton('Да', callback_data = 'yes_adress,{}'.format(search_name))
-	item32 = types.InlineKeyboardButton('Нет', callback_data = 'no_adress')
-
-	markup3.add(item31)
-	markup3.add(item32)
-
-	bot.send_message(message.chat.id, 'Вы ввели: ' + search_name + '\nДанные верны?', reply_markup = markup3)
+#def set_adress(message):
+#	search_name = message.text
+#	markup3 = types.InlineKeyboardMarkup()
+#	item31 = types.InlineKeyboardButton('Да', callback_data = 'yes_adress,{}'.format(search_name))
+#	item32 = types.InlineKeyboardButton('Нет', callback_data = 'no_adress')
+#
+#	markup3.add(item31)
+#	markup3.add(item32)
+#
+#	bot.send_message(message.chat.id, 'Вы ввели: ' + search_name + '\nДанные верны?', reply_markup = markup3)
 
 def set_product(message):
 	search_name = message.text
@@ -139,7 +139,12 @@ def win_outsearch_product(message, search_name):
 	cur_page = ''
 	pages = ceil(len(out) / 4)
 	Ncur_page = 0
-	for i in range(4):
+	if len(out) == 1: k = 1
+	elif len(out) == 2: k = 2
+	elif len(out) == 3: k = 3
+	elif len(out) == 4: k = 4
+	else: k = len(out)
+	for i in range(k):
 		cur_page += char_list[i] + ' ' + ' '.join(out[i][1:3]) + ' (' + out[i][4] + 'руб.)\n'
 	bot.send_message(message.chat.id, 'Вот что я нашёл:\n' + cur_page + '\n\nВыведена страница 1/' + str(pages) + '\n\nДля добавления товара в корзину введите его номер из списка:', reply_markup = markup5)
 	bot.register_next_step_handler(message, lambda mm: table(mm, out, Ncur_page, pages, cur_page))
@@ -224,17 +229,19 @@ def gen_table(message, toggle, out, Ncur_page, pages, cur_page):
 	bot.send_message(message.chat.id, msg, reply_markup = tmp_markup)
 	bot.register_next_step_handler(message, lambda mm: table(mm, out, Ncur_page, pages, cur_page))
 
+def documentation_help(message):
+	#bot.send_document(message.chat.id, '')
+	pass
 
-
-def win_outsearch_adress(message, search_name):
-	out = SearchFunc(message.text)
-	cur_page = ''
-	pages = ceil(len(out) / 4)
-	Ncur_page = 0
-	for i in range(4):
-		cur_page += char_list[i] + ' ' + ' '.join(out[i][1:3]) + ' (' + out[i][4] + 'руб.)\n'
-	bot.send_message(message.chat.id, 'Вот что я нашёл:\n' + cur_page + '\n\nВыведена страница 1/' + str(pages) + '\n\nДля добавления товара в корзину введите его номер из списка:', reply_markup = markup5)
-	bot.register_next_step_handler(message, lambda mm: table(mm, out, Ncur_page, pages, cur_page))
+#def win_outsearch_adress(message, search_name):
+#	out = SearchFunc(message.text)
+#	cur_page = ''
+#	pages = ceil(len(out) / 4)
+#	Ncur_page = 0
+#	for i in range(4):
+#		cur_page += char_list[i] + ' ' + ' '.join(out[i][1:3]) + ' (' + out[i][4] + 'руб.)\n'
+#	bot.send_message(message.chat.id, 'Вот что я нашёл:\n' + cur_page + '\n\nВыведена страница 1/' + str(pages) + '\n\nДля добавления товара в корзину введите его номер из списка:', reply_markup = markup5)
+#	bot.register_next_step_handler(message, lambda mm: table(mm, out, Ncur_page, pages, cur_page))
 
 
 def basket(message):
@@ -247,12 +254,13 @@ def basket(message):
 
 
 def delete_item_from_basket(message):
-	if message.text == 'Очистить корзину 🗑':
+	if message.text == 'Очистить корзину ♻':
 		cur_basket.clear()
 		basket(message)
 	elif message.text == 'Отправить запрос 📝':
+		bot.send_message(message.chat.id, '🏢 Ваш запрос успешно отправлен на наш сервер 🏢\n📞 С вами скоро свяжется наш специалист 📞\n❤ Спасибо, что выбираете нас ❤')
 		#send_basket()
-		pass
+		cur_basket.clear()
 	elif message.text == 'В начало 🔼':
 		welcome(message)
 	else:
@@ -266,17 +274,18 @@ def delete_item_from_basket(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_worker(call):
-	if call.data.split(',')[0] == 'yes_adress':
-		bot.edit_message_reply_markup(call.message.chat.id, message_id = call.message.message_id, reply_markup = '')
-		win_outsearch_adress(call.message, call.data.split(',')[1])
-	elif call.data.split(',')[0] == 'yes_product':
+	if call.data.split(',')[0] == 'yes_product':
 		bot.edit_message_reply_markup(call.message.chat.id, message_id = call.message.message_id, reply_markup = '')
 		win_outsearch_product(call.message, call.data.split(',')[1])
-	elif call.data == 'no_adress':
-		bot.edit_message_reply_markup(call.message.chat.id, message_id = call.message.message_id, reply_markup = '')
-		win_search_adress(call.message)
 	elif call.data == 'no_product':
 		bot.edit_message_reply_markup(call.message.chat.id, message_id = call.message.message_id, reply_markup = '')
 		win_search_product(call.message)
+	#elif call.data.split(',')[0] == 'yes_adress':
+	#	bot.edit_message_reply_markup(call.message.chat.id, message_id = call.message.message_id, reply_markup = '')
+	#	win_outsearch_adress(call.message, call.data.split(',')[1])
+	#elif call.data == 'no_adress':
+	#	bot.edit_message_reply_markup(call.message.chat.id, message_id = call.message.message_id, reply_markup = '')
+	#	win_search_adress(call.message)
+	
 
 bot.polling(none_stop=True, interval=0)
