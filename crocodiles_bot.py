@@ -211,7 +211,6 @@ def gen_table(message, toggle, out, Ncur_page, pages, cur_page):
 	bot.register_next_step_handler(message, lambda mm: table(mm, out, Ncur_page, pages, cur_page))
 
 def documentation_help(message):
-	bot.send_photo(message.chat.id, "https://yadi.sk/i/GoBhQiHml_e2pQ")
 	bot.send_message(message.chat.id, 'Чтобы было легче разобраться, я приготовил для тебя небольшую инструкцию!\nЧтобы с ней ознакомиться, перейди по ссылке:\n\n https://telegra.ph/Crocobot-here-11-15')
 
 
