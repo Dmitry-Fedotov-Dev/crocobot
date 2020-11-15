@@ -6,7 +6,7 @@
 ![alt text](https://sun9-51.userapi.com/YsgZCUAPh66Z595fmCr7u2w0SQWsrhETZqMSAA/rJ7KjoAHaK8.jpg)
 
 ## 1) Push "Start" to wake up Croco and let's booking a needest medications! 
- ![alt text](https://sun9-57.userapi.com/Bz_s07Z0tgoTxMtO5xPxItgB7aVe9S3kzJQM2A/jEBEPMqCRSk.jpg)
+ ![alt text](https://sun9-56.userapi.com/h0denaw89vk6DBxwaYxeojSMnW19jD5ESVxXmA/1fjERm61hAw.jpg)
 ## 2) Choose the "Search a medication :pill:" for start a seaching.
  ![alt text](https://sun9-68.userapi.com/woOteiY3kjadD8bAJdTztXWa6BtUfO_G2jGR_w/92wj4ZCIxS4.jpg)
  ![alt text](https://sun9-23.userapi.com/4jgfSqsbIpSTTw0GnUrTP9WZddNzdVCaOqe_Wg/jptUzvkDo4Y.jpg)
