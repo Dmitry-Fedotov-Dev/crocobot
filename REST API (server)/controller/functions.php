@@ -1,4 +1,6 @@
 <?php 
+$connection = mysqli_connect('localhost','root','','rest_db');
+
 
  function getPosts ($connection) {
 
@@ -14,7 +16,6 @@
  function getPost ($connection, $id){
  		$post = mysqli_query($connection, "SELECT * FROM json_table WHERE id = '$id'");
  		if (mysqli_num_rows($post) === 0){
-
  			http_response_code(404);
  			$res = [
  					"status" => false,
@@ -26,14 +27,42 @@
  			$post = mysqli_fetch_assoc($post);
  			echo json_encode($post);
  		}
- 		
  }
+/*
+function getSearch ($connection,$string){
+		$posts = mysqli_query($connection, "SELECT * FROM json_table WHERE название LIKE '%" .$string. "%'");
+		$postsList = [];
+		while ($post = mysqli_fetch_assoc($posts)) {
+			$postsList[] = $post;
+		}
+		echo json_encode($postsList);
+}
+*/
+
+
+function getSearch ($connection,$string){
+		$posts = mysqli_query($connection, "SELECT * FROM json_table WHERE название LIKE '%" .$string. "%'");
+		$postsList = [];
+		while ($post = mysqli_fetch_assoc($posts)) {
+			$postsList[] = $post;
+		} 
+		if (count($postsList) == 0) {
+			$postsList[] = [
+ 					"id" => "1",
+ 					"название" => "Post not found",
+ 					"производитель" => "So sorry..",
+ 					"код" => "",
+ 					"цена" => "0"
+ 			];
+ 			echo json_encode($postsList);
+		} else {
+			echo json_encode($postsList);
+		}	
+}
 
 
  function addPost($connection, $data) {
  	if (count($data) == 1){
- 	//	$data = $data[0];
- 	//	echo var_dump($data);
  		$title = $data['товар'];
 	 	$made_by = $data['завод'];
 	 	$code = $data['код'];
