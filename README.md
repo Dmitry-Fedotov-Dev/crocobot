@@ -1,3 +1,3 @@
 # crocobot
 
-This is the best Telegram bot for search and order a medications.
+This is the best Telegram bot for search and order the medications.
