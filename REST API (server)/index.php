@@ -14,6 +14,7 @@ $params = explode('/', $q);
 $type = $params[0];
 $id = $params[1];
 
+
 if ($method === 'GET'){
 	if ($type === 'posts'){
 
@@ -22,7 +23,9 @@ if ($method === 'GET'){
 		} else {
 			getPosts($connection, $id);
 		} 
-	}
+	} elseif ($type = 'search'){
+      getSearch($connection, $id);
+  }
 } elseif ($method === 'POST'){
 	if ($type === 'posts'){
     $data = file_get_contents('php://input');
