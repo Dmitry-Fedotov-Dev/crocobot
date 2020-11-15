@@ -5,15 +5,6 @@ import json
 from telebot import types
 from math import ceil
 
-def getCategoryFunc(category):
-	if category == "cat1":
-		url = "http://my.rest.api/posts"
-		drug_list = requests.get(url)
-		return json.dumps(drug_list.json(), ensure_ascii = False)
-	if category == "cat2":
-		return "Пока низя"
-	if category == "cat3":
-		return "Ещё не готово"
 
 def SearchFunc(string):
     url = "http://my.rest.api/search/" + string
@@ -143,7 +134,7 @@ def win_outsearch_product(message, search_name):
 	elif len(out) == 2: k = 2
 	elif len(out) == 3: k = 3
 	elif len(out) == 4: k = 4
-	else: k = len(out)
+	else: k = 4
 	for i in range(k):
 		cur_page += char_list[i] + ' ' + ' '.join(out[i][1:3]) + ' (' + out[i][4] + 'руб.)\n'
 	bot.send_message(message.chat.id, 'Вот что я нашёл:\n' + cur_page + '\n\nВыведена страница 1/' + str(pages) + '\n\nДля добавления товара в корзину введите его номер из списка:', reply_markup = markup5)
@@ -153,10 +144,15 @@ def table(message, out, Ncur_page, pages, cur_page):
 	if message.text == '▶':
 		cur_page = ''
 		Ncur_page += 1
-		for i in range(4):
-			if i+4*(Ncur_page - 1) < len(out):
+		if len(out) == 1: k = 1
+		elif len(out) == 2: k = 2
+		elif len(out) == 3: k = 3
+		elif len(out) == 4: k = 4
+		else: k = 4
+		for i in range(k):
+			if i+4*Ncur_page < len(out):
 				cur_page += char_list[i] + ' ' + ' '.join(out[i+4*Ncur_page][1:3]) + ' (' + out[i+4*Ncur_page][4] + 'руб.)\n'
-		if Ncur_page == 1:
+		if Ncur_page == 0:
 			gen_table(message, 0, out, Ncur_page, pages, cur_page)
 		elif Ncur_page == pages:
 			gen_table(message, 2, out, Ncur_page, pages, cur_page)
@@ -168,7 +164,7 @@ def table(message, out, Ncur_page, pages, cur_page):
 		for i in range(4):
 			if 4*Ncur_page - i >= 0:
 				cur_page += char_list[i] + ' ' + ' '.join(out[4*Ncur_page - i][1:3]) + ' (' + out[4*Ncur_page - i][4] + 'руб.)\n'
-		if Ncur_page == 1:
+		if Ncur_page == 0:
 			gen_table(message, 0, out, Ncur_page, pages, cur_page)
 		elif Ncur_page == pages:
 			gen_table(message, 2, out, Ncur_page, pages, cur_page)
@@ -178,7 +174,7 @@ def table(message, out, Ncur_page, pages, cur_page):
 		welcome(message)
 	elif message.text == char_list[0]:
 		cur_basket.append(out[4*Ncur_page])
-		if Ncur_page == 1:
+		if Ncur_page == 0:
 			gen_table(message, 0, out, Ncur_page, pages, cur_page)
 		elif Ncur_page == pages:
 			gen_table(message, 2, out, Ncur_page, pages, cur_page)
@@ -187,7 +183,7 @@ def table(message, out, Ncur_page, pages, cur_page):
 		bot.register_next_step_handler(message, lambda mm: table(mm, out, Ncur_page, pages, cur_page))
 	elif message.text == char_list[1]:
 		cur_basket.append(out[1 + 4*Ncur_page])
-		if Ncur_page == 1:
+		if Ncur_page == 0:
 			gen_table(message, 0, out, Ncur_page, pages, cur_page)
 		elif Ncur_page == pages:
 			gen_table(message, 2, out, Ncur_page, pages, cur_page)
@@ -196,7 +192,7 @@ def table(message, out, Ncur_page, pages, cur_page):
 		bot.register_next_step_handler(message, lambda mm: table(mm, out, Ncur_page, pages, cur_page))
 	elif message.text == char_list[2]:
 		cur_basket.append(out[2 + 4*Ncur_page])
-		if Ncur_page == 1:
+		if Ncur_page == 0:
 			gen_table(message, 0, out, Ncur_page, pages, cur_page)
 		elif Ncur_page == pages:
 			gen_table(message, 2, out, Ncur_page, pages, cur_page)
@@ -205,7 +201,7 @@ def table(message, out, Ncur_page, pages, cur_page):
 		bot.register_next_step_handler(message, lambda mm: table(mm, out, Ncur_page, pages, cur_page))
 	elif message.text == char_list[3]:
 		cur_basket.append(out[3 + 4*Ncur_page])
-		if Ncur_page == 1:
+		if Ncur_page == 0:
 			gen_table(message, 0, out, Ncur_page, pages, cur_page)
 		elif Ncur_page == pages:
 			gen_table(message, 2, out, Ncur_page, pages, cur_page)
@@ -230,8 +226,8 @@ def gen_table(message, toggle, out, Ncur_page, pages, cur_page):
 	bot.register_next_step_handler(message, lambda mm: table(mm, out, Ncur_page, pages, cur_page))
 
 def documentation_help(message):
-	#bot.send_document(message.chat.id, '')
-	pass
+	bot.send_photo(message.chat.id, "https://yadi.sk/i/GoBhQiHml_e2pQ")
+	bot.send_message(message.chat.id, 'Чтобы было легче разобраться, я приготовил для тебя небольшую инструкцию!\nЧтобы с ней ознакомиться, перейди по ссылке:\n\n https://telegra.ph/Crocobot-here-11-15')
 
 #def win_outsearch_adress(message, search_name):
 #	out = SearchFunc(message.text)
