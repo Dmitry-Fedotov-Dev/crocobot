@@ -17,7 +17,7 @@
 ![alt text](https://sun9-18.userapi.com/IW4Ie_Tv7VgpwJdYcrGgKqF0_FT6gC4ABiY-0g/Jjiz25znlNM.jpg)
 ## 5) Wow! It looks like Croco found what you were looking for!
 ![alt text](https://sun9-56.userapi.com/H63FLEuC0x2H93nzEsjnTdbj4LGY1L94Ocouqg/TRZPMtc6rbU.jpg)
-![alt text](https://sun9-6.userapi.com/TZi1er_ry9H5zXVbyCjTncs_vix6gfmNEcCAgA/7LGFTCiXAtU.jpg)
+![alt text](https://sun9-14.userapi.com/C2RDzpK_5cX7BRJZXmQWpfqt_Zu9lgh0P9bPZg/GyKOV3cYuSs.jpg)
 ## 6) Choose the emoji of your needed product.
 ![alt text](https://sun9-53.userapi.com/Wc50Xl3RBqYiI_SreGXeCyO6rxuLvLaGzgyE_A/U_7Bbt2AR6Q.jpg)
 ## 7) Push the button "Go home" after it.
