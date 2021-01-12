@@ -8,7 +8,7 @@
 ## 1) Push "Start" to wake up Croco and let's booking a needest medications! 
  ![alt text](https://sun9-56.userapi.com/h0denaw89vk6DBxwaYxeojSMnW19jD5ESVxXmA/1fjERm61hAw.jpg)
 ## 2) Choose the "Search a medication :pill:" for start a seaching.
- ![alt text](https://sun9-68.userapi.com/woOteiY3kjadD8bAJdTztXWa6BtUfO_G2jGR_w/92wj4ZCIxS4.jpg)
+ ![alt text](https://sun9-75.userapi.com/impg/OKICTNoi3HB02yehv7qUv5oJTUE08oabJrv7dg/EyXQXfoEFmw.jpg?size=451x492&quality=96&proxy=1&sign=37d77bcf04fdb34d8e02a581eade7e6d&type=album)
  ![alt text](https://sun9-23.userapi.com/4jgfSqsbIpSTTw0GnUrTP9WZddNzdVCaOqe_Wg/jptUzvkDo4Y.jpg)
 ## 3) Type your needed medication and send this. For example, we will find an antiseptic. 
 ## (Take care of your health in this difficult time!)
